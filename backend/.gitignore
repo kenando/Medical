@@ -1,0 +1,9 @@
+vendor
+bin/
+tmp/
+docs/
+
+.env
+
+venv
+

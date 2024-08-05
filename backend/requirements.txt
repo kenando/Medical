@@ -1,0 +1,5 @@
+opencv-python-headless
+ultralytics
+flask
+flask-cors
+mediapipe
