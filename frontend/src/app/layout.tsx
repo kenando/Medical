@@ -1,6 +1,8 @@
 import type {Metadata} from "next";
 import Providers from "@/components/provider";
 import {Header} from "@/components/header/header";
+import styles from "@/app/layout.module.css";
+import {Navbar} from "@/components/nav-bar/nav-bar";
 
 export const metadata: Metadata = {
     title: "Create Next App",
@@ -8,15 +10,21 @@ export const metadata: Metadata = {
 };
 
 export default function RootLayout({
-                                       children,
-                                   }: Readonly<{
+   children,
+}: Readonly<{
     children: React.ReactNode;
 }>) {
     return (
         <html lang="en">
         <body>
         <Providers>
-            {children}
+            <div className={styles.main}>
+                <Header/>
+                <div className={styles.content}>
+                    <Navbar/>
+                    {children}
+                </div>
+            </div>
         </Providers>
         </body>
         </html>

@@ -4,6 +4,8 @@ import { Group, rem, Text, MultiSelect, Button } from '@mantine/core';
 import { IconPhoto, IconUpload, IconX } from '@tabler/icons-react';
 import { Dropzone } from '@mantine/dropzone';
 import { Loading } from "@/components/loading/loading";
+import styles from '@/app/analyze/input.module.css';
+
 
 const KEYPOINTS_NAMES = [
     { value: "nose", label: "鼻" },
@@ -43,27 +45,34 @@ export function InputForm() {
         formData.append('video', file);
         formData.append('keypoints', JSON.stringify(selectedKeypoints));
         setLoading(true);
-        const response = await fetch('http://localhost:5000/video', {
-            method: 'POST',
-            body: formData,
-        });
-        setLoading(false);
-        if (response.ok) {
-            const blob = await response.blob();
-            const url = window.URL.createObjectURL(blob);
-            const link = document.createElement('a');
-            link.href = url;
-            link.download = 'output.mp4';
-            document.body.appendChild(link);
-            link.click();
-            link.remove();
-        } else {
-            console.error('Failed to upload file');
+        try {
+            const response = await fetch('http://localhost:5000/video', {
+                method: 'POST',
+                body: formData,
+            });
+            if (response.ok) {
+                const blob = await response.blob();
+                const url = window.URL.createObjectURL(blob);
+                const link = document.createElement('a');
+                link.href = url;
+                link.download = 'output.zip';  // Changed to output.zip
+                document.body.appendChild(link);
+                link.click();
+                link.remove();
+            } else {
+                const errorText = await response.text();
+                console.error('Failed to upload file:', errorText);
+            }
+        } catch (error) {
+            console.error('Error during fetch:', error);
+        } finally {
+            setLoading(false);
         }
     };
 
+
     return (
-        <div>
+        <div className={styles.main}>
             <Loading visible={loading} />
             <Dropzone
                 onDrop={(files) => handleFileChange(files)}
@@ -115,8 +124,9 @@ export function InputForm() {
                 value={selectedKeypoints}
                 onChange={setSelectedKeypoints}
                 clearable
+                className={styles.multiSelect}
             />
-            <Button onClick={handleSubmit}>送信</Button>
+            <Button onClick={handleSubmit} className={styles.button}>送信</Button>
         </div>
     );
 }
