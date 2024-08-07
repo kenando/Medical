@@ -1,7 +1,6 @@
 import cv2
 import tempfile
 import matplotlib.pyplot as plt
-import io
 import matplotlib
 
 # Use a non-interactive backend
@@ -9,7 +8,7 @@ matplotlib.use('Agg')
 
 def process_video(input_path, video_output_stream, graph_output_stream, selected_keypoints):
     from ultralytics import YOLO
-    model = YOLO("yolov8n-pose.pt")
+    model = YOLO("yolov8n-pose.pt").cuda()  # Use CUDA
 
     capture = cv2.VideoCapture(input_path)
 
@@ -42,7 +41,7 @@ def process_video(input_path, video_output_stream, graph_output_stream, selected
     while capture.isOpened():
         success, frame = capture.read()
         if success:
-            results = model(frame)
+            results = model(frame, device='cuda')  # Use CUDA device
             annotatedFrame = frame.copy()
 
             if results[0].keypoints is not None and results[0].keypoints.conf is not None:
